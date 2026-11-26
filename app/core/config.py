@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite+aiosqlite:///./tasks.db"
     SQL_ECHO: bool = False
     DB_POOL_SIZE: int = 5
-    DB_MAX_OVERFLOW: 10
+    DB_MAX_OVERFLOW: int = 10
 
     model_config = SettingsConfigDict(env_file=".env")
 
