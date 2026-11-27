@@ -3,13 +3,13 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: taskuser
-      POSTGRES_PASSWORD: taskpassword
-      POSTGRES_DB: taskdb
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in .env}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U taskuser -d taskdb"]
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -18,10 +18,10 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "${API_PORT:?Set API_PORT in .env}:8000"
     environment:
-      DATABASE_URL: postgresql+asyncpg://taskuser:taskpassword@db:5432/taskdb
-      SECRET_KEY: replace-with-a-strong-secret-key
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:?Set POSTGRES_USER in .env}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:?Set POSTGRES_DB in .env}
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY in .env}
       UPLOAD_DIR: /app/uploads
     volumes:
       - uploads_data:/app/uploads
