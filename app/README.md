@@ -61,7 +61,8 @@ Start the API and register a user first. From `app`, using the same
 uv run python -m scripts.seed_tasks user@example.com
 ```
 
-Each run adds 25 tasks for that user; it does not remove existing tasks. After
+Each run adds 25 tasks with descriptions for that user; it does not change or
+remove existing tasks. After
 authorizing in `/docs`, request:
 
 ```text

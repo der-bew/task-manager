@@ -36,6 +36,18 @@ class SeedTasksTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual([len(page.items) for page in pages], [10, 10, 5])
             self.assertTrue(all(page.total == 25 and page.pages == 3 for page in pages))
             self.assertEqual(len({task.id for page in pages for task in page.items}), 25)
+            descriptions = {
+                task.title: task.description for page in pages for task in page.items
+            }
+            self.assertTrue(all(description and description.strip() for description in descriptions.values()))
+            self.assertEqual(
+                descriptions["Plan the week"],
+                "Set priorities and schedule the work to complete this week.",
+            )
+            self.assertEqual(
+                descriptions["Plan the next sprint"],
+                "Select and estimate the work to include in the next sprint.",
+            )
             other_page = await list_my_tasks(PaginationParams(), session, other)
             self.assertEqual(other_page.total, 0)
 
